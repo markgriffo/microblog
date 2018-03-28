@@ -46,6 +46,18 @@ def index():
                            posts=posts.items, next_url=next_url,
                            prev_url=prev_url)
 
+@bp.route('/delete/<id>')
+@login_required
+def delete(id):
+    post = Post.query.filter(Post.id == id, Post.author == current_user).first()
+    if post:
+        db.session.delete(post)
+        db.session.commit()
+        flash(_('Your post has been deleted.'))
+    else:
+        flash(_('You don\'t have access'))
+    return redirect(url_for('main.user', username=current_user.username))
+
 
 @bp.route('/explore')
 @login_required
